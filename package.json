@@ -1,0 +1,20 @@
+{
+  "name": "obsidian-ruby-translator",
+  "version": "0.4.0",
+  "private": true,
+  "description": "Obsidian plugin that translates selected English words into ruby annotations.",
+  "type": "module",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "tsc --noEmit && node esbuild.config.mjs production",
+    "test": "tsx --test tests/*.test.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "builtin-modules": "^4.0.0",
+    "esbuild": "^0.25.0",
+    "obsidian": "^1.8.7",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

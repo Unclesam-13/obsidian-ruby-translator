@@ -1,0 +1,33 @@
+.ruby-translator-prompt {
+  min-height: 8em;
+  width: 100%;
+}
+
+.ruby-translator-security-note {
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  line-height: 1.5;
+}
+
+rt {
+  user-select: text;
+}
+
+ruby.ruby-translator-over {
+  ruby-position: over;
+  -webkit-ruby-position: before;
+}
+
+ruby.ruby-translator-under {
+  ruby-position: under;
+  -webkit-ruby-position: after;
+}
+
+body.ruby-translator-hide-annotations ruby rt {
+  display: none;
+}
+
+body.ruby-translator-custom-color ruby.ruby-translator-over rt,
+body.ruby-translator-custom-color ruby.ruby-translator-under rt {
+  color: var(--ruby-translator-annotation-color);
+}
