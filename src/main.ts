@@ -11,6 +11,7 @@ import { createRubyMarkup, isEnglishWord } from "./ruby";
 import { RubyTranslatorSettingTab } from "./settings";
 import { translateText } from "./translator";
 import { extractAnnotations, planSummaryUpdate } from "./summary";
+import { FloatingTranslateButton } from "./floating";
 import {
   DEFAULT_SETTINGS,
   type AnnotationPosition,
@@ -22,6 +23,7 @@ const MAX_SELECTION_LENGTH = 500;
 export default class RubyTranslatorPlugin extends Plugin {
   settings!: RubyTranslatorSettings;
   private ribbonButtonEl?: HTMLElement;
+  private floating?: FloatingTranslateButton;
 
   async onload(): Promise<void> {
     await this.loadSettings();
@@ -85,6 +87,25 @@ export default class RubyTranslatorPlugin extends Plugin {
         return true;
       }
     });
+
+    // 选中英文后显示浮动翻译按钮（手机上系统选区菜单无法加按钮）
+    this.floating = new FloatingTranslateButton(
+      this.app,
+      () => this.settings.floatingButton,
+      (editor, position) => this.annotateSelection(editor, position)
+    );
+    const schedule = () => this.floating?.schedule();
+    this.registerDomEvent(document, "selectionchange", schedule);
+    this.registerDomEvent(document, "keyup", schedule);
+    this.registerDomEvent(window, "resize", schedule);
+    this.registerDomEvent(document, "scroll", schedule, true);
+    if (window.visualViewport) {
+      this.registerDomEvent(window.visualViewport as unknown as HTMLElement, "resize", schedule);
+      this.registerDomEvent(window.visualViewport as unknown as HTMLElement, "scroll", schedule);
+    }
+    this.registerEvent(this.app.workspace.on("active-leaf-change", () => this.floating?.hide()));
+    this.registerEvent(this.app.workspace.on("layout-change", schedule));
+    this.register(() => this.floating?.destroy());
 
     this.registerEvent(
       this.app.workspace.on("editor-menu", (menu: Menu, editor: Editor) => {

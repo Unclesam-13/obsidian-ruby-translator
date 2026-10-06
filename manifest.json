@@ -1,7 +1,7 @@
 {
   "id": "ruby-translator",
   "name": "Ruby Translator",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "minAppVersion": "1.5.0",
   "description": "Translate selections into configurable ruby annotations, build a glossary, and toggle visibility.",
   "author": "lh",

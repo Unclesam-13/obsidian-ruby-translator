@@ -1,6 +1,6 @@
 {
   "name": "obsidian-ruby-translator",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "description": "Obsidian plugin that translates selected English words into ruby annotations.",
   "type": "module",

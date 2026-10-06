@@ -1,11 +1,13 @@
 export type TranslationProvider = "google" | "openai-compatible";
 export type AnnotationPosition = "over" | "under";
+export type FloatingButtonMode = "mobile" | "always" | "off";
 
 export interface RubyTranslatorSettings {
   provider: TranslationProvider;
   targetLanguage: string;
   defaultPosition: AnnotationPosition;
   allowSentences: boolean;
+  floatingButton: FloatingButtonMode;
   autoAppendSummary: boolean;
   annotationsHidden: boolean;
   useCustomAnnotationColor: boolean;
@@ -23,6 +25,7 @@ export const DEFAULT_SETTINGS: RubyTranslatorSettings = {
   targetLanguage: "zh-CN",
   defaultPosition: "over",
   allowSentences: true,
+  floatingButton: "mobile",
   autoAppendSummary: true,
   annotationsHidden: false,
   useCustomAnnotationColor: false,

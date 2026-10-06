@@ -1,7 +1,7 @@
 import { App, Notice, PluginSettingTab, Setting } from "obsidian";
 import type RubyTranslatorPlugin from "./main";
 import { translateText } from "./translator";
-import type { AnnotationPosition } from "./types";
+import type { AnnotationPosition, FloatingButtonMode } from "./types";
 
 export class RubyTranslatorSettingTab extends PluginSettingTab {
   constructor(app: App, private readonly plugin: RubyTranslatorPlugin) {
@@ -62,6 +62,21 @@ export class RubyTranslatorSettingTab extends PluginSettingTab {
           this.plugin.settings.allowSentences = value;
           await this.plugin.saveSettings();
         })
+      );
+
+    new Setting(containerEl)
+      .setName("选中后显示浮动翻译按钮")
+      .setDesc("选中英文后，在选区旁边显示「译到上方 / 译到下方」按钮。手机上系统的选区菜单无法加入插件按钮，建议保持开启。")
+      .addDropdown((dropdown) =>
+        dropdown
+          .addOption("mobile", "仅手机和平板")
+          .addOption("always", "所有设备")
+          .addOption("off", "关闭")
+          .setValue(this.plugin.settings.floatingButton)
+          .onChange(async (value) => {
+            this.plugin.settings.floatingButton = value as FloatingButtonMode;
+            await this.plugin.saveSettings();
+          })
       );
 
     new Setting(containerEl)
