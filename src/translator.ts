@@ -73,8 +73,10 @@ async function translateWithOpenAiCompatible(
 
   const promptTemplate = isEnglishWord(text) ? settings.aiPrompt : settings.aiSentencePrompt;
   const prompt = promptTemplate
-    .replaceAll("{{language}}", settings.targetLanguage)
-    .replaceAll("{{text}}", text);
+    .split("{{language}}")
+    .join(settings.targetLanguage)
+    .split("{{text}}")
+    .join(text);
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (settings.aiApiKey.trim()) {
     headers.Authorization = `Bearer ${settings.aiApiKey.trim()}`;

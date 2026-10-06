@@ -18,7 +18,8 @@ export function extractAnnotations(content: string): TranslationAnnotation[] {
   const seen = new Set<string>();
   const rubyPattern = /<ruby\b[^>]*>([\s\S]*?)<rt\b[^>]*>([\s\S]*?)<\/rt>\s*<\/ruby>/gi;
 
-  for (const match of sourceWithoutSummary.matchAll(rubyPattern)) {
+  let match: RegExpExecArray | null;
+  while ((match = rubyPattern.exec(sourceWithoutSummary)) !== null) {
     const source = decodeHtml(stripTags(match[1] ?? "")).trim();
     const translation = decodeHtml(stripTags(match[2] ?? "")).trim();
     if (!source || !translation) continue;

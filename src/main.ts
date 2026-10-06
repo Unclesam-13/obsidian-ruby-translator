@@ -38,6 +38,7 @@ export default class RubyTranslatorPlugin extends Plugin {
 
     this.addCommand({
       id: "annotate-selection-with-translation",
+      icon: "languages",
       name: "按默认位置添加翻译注释",
       editorCheckCallback: (checking, editor) => {
         if (!editor.somethingSelected()) return false;
@@ -48,6 +49,7 @@ export default class RubyTranslatorPlugin extends Plugin {
 
     this.addCommand({
       id: "rebuild-annotation-summary",
+      icon: "list-restart",
       name: "重建当前文档的翻译注释汇总",
       editorCallback: (editor) => {
         const count = this.refreshSummary(editor);
@@ -57,12 +59,14 @@ export default class RubyTranslatorPlugin extends Plugin {
 
     this.addCommand({
       id: "toggle-annotation-visibility",
+      icon: "eye-off",
       name: "隐藏或恢复所有翻译注释",
       callback: () => void this.toggleAnnotationVisibility()
     });
 
     this.addCommand({
       id: "annotate-selection-above",
+      icon: "arrow-up-to-line",
       name: "给选中的英文添加上方翻译",
       editorCheckCallback: (checking, editor) => {
         if (!editor.somethingSelected()) return false;
@@ -73,6 +77,7 @@ export default class RubyTranslatorPlugin extends Plugin {
 
     this.addCommand({
       id: "annotate-selection-below",
+      icon: "arrow-down-to-line",
       name: "给选中的英文添加下方翻译",
       editorCheckCallback: (checking, editor) => {
         if (!editor.somethingSelected()) return false;
@@ -139,14 +144,21 @@ export default class RubyTranslatorPlugin extends Plugin {
     position: AnnotationPosition,
     _view?: MarkdownView
   ): Promise<void> {
-    const source = editor.getSelection();
+    const rawSelection = editor.getSelection();
+    const source = rawSelection.trim();
     if (!source) {
       new Notice("请先选中英文单词、短语或句子");
       return;
     }
-    if (source !== source.trim()) {
-      new Notice("选区首尾不能包含空格或换行");
-      return;
+    // 手机上拖动选区时常会多选到首尾的空格，这里自动去掉
+    let from = editor.getCursor("from");
+    let to = editor.getCursor("to");
+    if (source !== rawSelection) {
+      const lead = rawSelection.length - rawSelection.trimStart().length;
+      const trail = rawSelection.length - rawSelection.trimEnd().length;
+      from = editor.offsetToPos(editor.posToOffset(from) + lead);
+      to = editor.offsetToPos(editor.posToOffset(to) - trail);
+      editor.setSelection(from, to);
     }
     if (source.includes("\n")) {
       new Notice("短语或句子注释不能跨越多个段落");
@@ -169,8 +181,6 @@ export default class RubyTranslatorPlugin extends Plugin {
       return;
     }
 
-    const from = editor.getCursor("from");
-    const to = editor.getCursor("to");
     new Notice(`正在查询“${source}”…`, 2500);
 
     try {
